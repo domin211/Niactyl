@@ -1,0 +1,130 @@
+import Fastify from 'fastify';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fastifyStatic from '@fastify/static';
+import cors from '@fastify/cors';
+import fastifyCookie from '@fastify/cookie';
+import fastifySession from '@fastify/session';
+import fastifyOauth2 from '@fastify/oauth2';
+import fs from 'fs';
+import YAML from 'yaml';
+import fetch from 'node-fetch';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+async function start() {
+  const fastify = Fastify({ logger: true });
+
+  const configPath = path.join(__dirname, 'config.yml');
+  const config = YAML.parse(fs.readFileSync(configPath, 'utf8'));
+
+  await fastify.register(cors);
+  await fastify.register(fastifyCookie);
+  await fastify.register(fastifySession, {
+    secret: config.sessionSecret || 'change_this',
+    cookie: { secure: false },
+  });
+
+  await fastify.register(fastifyOauth2, {
+    name: 'discordOAuth2',
+    scope: ['identify', 'email'],
+    credentials: {
+      client: {
+        id: config.discord.clientId,
+        secret: config.discord.clientSecret,
+      },
+      auth: {
+        authorizeHost: 'https://discord.com',
+        authorizePath: '/oauth2/authorize',
+        tokenHost: 'https://discord.com',
+        tokenPath: '/api/oauth2/token',
+      },
+    },
+    startRedirectPath: '/auth/discord',
+    callbackUri: config.discord.callbackUrl,
+  });
+
+fastify.get('/api/message', async () => {
+  return { message: 'Hello from server!' };
+});
+
+fastify.get('/api/user', async (req) => {
+  return { user: req.session.user || null };
+});
+
+fastify.get('/auth/discord/callback', async function (req, reply) {
+  const token = await this.discordOAuth2.getAccessTokenFromAuthorizationCodeFlow(req);
+  const userRes = await fetch('https://discord.com/api/users/@me', {
+    headers: { Authorization: `Bearer ${token.access_token}` },
+  });
+  const discordUser = await userRes.json();
+  req.session.user = discordUser;
+  await ensurePteroUser(discordUser);
+  reply.redirect('/dashboard');
+});
+
+fastify.get('/logout', async (req, reply) => {
+  await req.destroySession();
+  reply.redirect('/');
+});
+
+await fastify.register(fastifyStatic, {
+  root: path.join(__dirname, '../client/dist'),
+  prefix: '/',
+});
+
+fastify.get('*', async (req, reply) => {
+  return reply.sendFile('index.html');
+});
+
+  fastify.listen({ port: 3000 }, (err, address) => {
+    if (err) {
+      fastify.log.error(err);
+      process.exit(1);
+    }
+    fastify.log.info(`Server listening at ${address}`);
+  });
+}
+
+start().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
+
+async function ensurePteroUser(discordUser) {
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${config.pterodactyl.apiKey}`,
+  };
+  try {
+    // Attempt to find existing user by external_id
+    const res = await fetch(
+      `${config.pterodactyl.panelUrl}/api/application/users?filter[external_id]=${discordUser.id}`,
+      { headers }
+    );
+    const data = await res.json();
+    if (data.data && data.data.length > 0) {
+      return data.data[0];
+    }
+
+    // If not found, create one
+    const createRes = await fetch(
+      `${config.pterodactyl.panelUrl}/api/application/users`,
+      {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          username: discordUser.username,
+          email: discordUser.email,
+          first_name: discordUser.username,
+          last_name: 'Niactyl',
+          external_id: discordUser.id,
+        }),
+      }
+    );
+    return await createRes.json();
+  } catch (err) {
+    fastify.log.error(err);
+  }
+}
