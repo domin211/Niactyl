@@ -69,14 +69,22 @@ fastify.get('/logout', async (req, reply) => {
   reply.redirect('/');
 });
 
-await fastify.register(fastifyStatic, {
-  root: path.join(__dirname, '../client/dist'),
-  prefix: '/',
-});
+  const distPath = path.join(__dirname, '../client/dist');
+  if (fs.existsSync(distPath)) {
+    await fastify.register(fastifyStatic, {
+      root: distPath,
+      prefix: '/',
+      wildcard: false,
+    });
 
-fastify.get('*', async (req, reply) => {
-  return reply.sendFile('index.html');
-});
+    fastify.setNotFoundHandler((req, reply) => {
+      reply.sendFile('index.html');
+    });
+  } else {
+    fastify.log.warn(
+      `Static files not found at ${distPath}. Run 'npm run build' in the client directory.`
+    );
+  }
 
   fastify.listen({ port: 3000 }, (err, address) => {
     if (err) {
