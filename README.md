@@ -23,6 +23,7 @@ This project provides a simple full‑stack example using a fast Node.js server 
 
 During development you can run `npm run dev` in both `client` and `server` directories for hot‑reloading.
 
+<<<<<<< d5mawf-codex/create-fullstack-web-app-with-node.js-and-vite
 ## Deploying on Pterodactyl
 
 Import the **Node.js Generic** egg from the official Pterodactyl eggs repository.  Configure it with the following settings to run Niactyl:
@@ -32,4 +33,9 @@ Import the **Node.js Generic** egg from the official Pterodactyl eggs repository
 3. **Startup Command** – use `bash startup.sh`.
 
 The provided `startup.sh` script will pull updates when enabled, rebuild the React client and then start the Node.js server.
+=======
+## Pterodactyl Egg
+
+A sample egg is available at `pterodactyl/niactyl-egg.json`. Import this into your Pterodactyl panel to deploy the app. Set the `GIT_REPO` variable to your repository URL and keep `AUTO_UPDATE` enabled to pull updates on each restart.
+>>>>>>> main
 

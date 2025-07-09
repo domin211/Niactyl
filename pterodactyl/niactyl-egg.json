@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "version": "PTDL_v2",
+    "update_url": null
+  },
+  "name": "Niactyl",
+  "description": "Fullstack app with Discord auth and Pterodactyl user integration. Automatically pulls updates from GitHub.",
+  "docker_images": {
+    "nodejs": "ghcr.io/parkervcp/yolks:nodejs_18"
+  },
+  "file_denylist": [],
+  "startup": "bash startup.sh",
+  "scripts": {
+    "installation": {
+      "script": "apt-get update\napt-get install -y git\nif [ -d /mnt/server/.git ]; then rm -rf /mnt/server/*; fi\ngit clone --depth=1 ${GIT_REPO} /mnt/server\ncd /mnt/server/server && npm install\ncd /mnt/server/client && npm install && npm run build",
+      "container": "debian:bookworm-slim",
+      "entrypoint": "bash"
+    }
+  },
+  "variables": [
+    {
+      "name": "Git Repository",
+      "description": "Repository to pull the project from",
+      "env_variable": "GIT_REPO",
+      "default_value": "https://github.com/username/Niactyl.git",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string"
+    },
+    {
+      "name": "Auto Update",
+      "description": "Pull latest changes on startup if set to 1",
+      "env_variable": "AUTO_UPDATE",
+      "default_value": "1",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|boolean"
+    }
+  ]
+}
+
