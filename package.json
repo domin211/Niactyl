@@ -1,13 +1,20 @@
 {
-  "name": "niactyl",
+  "name": "niactyl-server",
   "version": "1.0.0",
-  "private": true,
-  "workspaces": [
-    "server",
-    "client"
-  ],
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "postinstall": "npm --workspace client run build",
-    "start": "node server/index.js"
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "fastify": "^4.23.2",
+    "@fastify/static": "^6.9.0",
+    "@fastify/cors": "^8.4.0",
+    "@fastify/cookie": "^8.2.0",
+    "@fastify/session": "^7.1.0",
+    "@fastify/oauth2": "^7.2.0",
+    "node-fetch": "^3.3.1",
+    "yaml": "^2.3.0"
   }
 }
