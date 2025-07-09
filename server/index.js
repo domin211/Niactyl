@@ -13,36 +13,37 @@ import fetch from 'node-fetch';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const fastify = Fastify({ logger: true });
+async function start() {
+  const fastify = Fastify({ logger: true });
 
-const configPath = path.join(__dirname, 'config.yml');
-const config = YAML.parse(fs.readFileSync(configPath, 'utf8'));
+  const configPath = path.join(__dirname, 'config.yml');
+  const config = YAML.parse(fs.readFileSync(configPath, 'utf8'));
 
-await fastify.register(cors);
-await fastify.register(fastifyCookie);
-await fastify.register(fastifySession, {
-  secret: config.sessionSecret || 'change_this',
-  cookie: { secure: false },
-});
+  await fastify.register(cors);
+  await fastify.register(fastifyCookie);
+  await fastify.register(fastifySession, {
+    secret: config.sessionSecret || 'change_this',
+    cookie: { secure: false },
+  });
 
-await fastify.register(fastifyOauth2, {
-  name: 'discordOAuth2',
-  scope: ['identify', 'email'],
-  credentials: {
-    client: {
-      id: config.discord.clientId,
-      secret: config.discord.clientSecret,
+  await fastify.register(fastifyOauth2, {
+    name: 'discordOAuth2',
+    scope: ['identify', 'email'],
+    credentials: {
+      client: {
+        id: config.discord.clientId,
+        secret: config.discord.clientSecret,
+      },
+      auth: {
+        authorizeHost: 'https://discord.com',
+        authorizePath: '/oauth2/authorize',
+        tokenHost: 'https://discord.com',
+        tokenPath: '/api/oauth2/token',
+      },
     },
-    auth: {
-      authorizeHost: 'https://discord.com',
-      authorizePath: '/oauth2/authorize',
-      tokenHost: 'https://discord.com',
-      tokenPath: '/api/oauth2/token',
-    },
-  },
-  startRedirectPath: '/auth/discord',
-  callbackUri: config.discord.callbackUrl,
-});
+    startRedirectPath: '/auth/discord',
+    callbackUri: config.discord.callbackUrl,
+  });
 
 fastify.get('/api/message', async () => {
   return { message: 'Hello from server!' };
@@ -77,12 +78,18 @@ fastify.get('*', async (req, reply) => {
   return reply.sendFile('index.html');
 });
 
-fastify.listen({ port: 3000 }, (err, address) => {
-  if (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-  fastify.log.info(`Server listening at ${address}`);
+  fastify.listen({ port: 3000 }, (err, address) => {
+    if (err) {
+      fastify.log.error(err);
+      process.exit(1);
+    }
+    fastify.log.info(`Server listening at ${address}`);
+  });
+}
+
+start().catch((err) => {
+  console.error(err);
+  process.exit(1);
 });
 
 async function ensurePteroUser(discordUser) {
