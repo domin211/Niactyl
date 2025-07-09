@@ -91,7 +91,7 @@ fastify.get('/logout', async (req, reply) => {
       fastify.log.error(err);
       process.exit(1);
     }
-    fastify.log.info(`Server listening at ${address}`);
+    fastify.log.info(`Niactyl server ready at ${address}`);
   });
 }
 

@@ -23,3 +23,11 @@ You can also run the provided `startup.sh` script which will install dependencie
 ```bash
 bash startup.sh
 ```
+
+If you see a warning about missing static files when starting the server, build the client:
+
+```bash
+cd client && npm run build
+```
+
+Running `startup.sh` will perform this build automatically whenever the `client/dist` directory is absent.
