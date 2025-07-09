@@ -1,6 +1,6 @@
 # Niactyl
 
-Fullstack application with a Fastify backend and simple frontend.
+Fullstack application with a Fastify backend and simple frontend. Requires Node.js 18 or newer.
 
 ## Getting Started
 
