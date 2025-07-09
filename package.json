@@ -1,0 +1,13 @@
+{
+  "name": "niactyl",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "postinstall": "npm --workspace client run build",
+    "start": "node server/index.js"
+  }
+}
