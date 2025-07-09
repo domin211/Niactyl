@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import pino from 'pino';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fastifyStatic from '@fastify/static';
@@ -14,7 +15,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function start() {
-  const fastify = Fastify({ logger: true });
+  const logger = pino({
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        ignore: 'pid,hostname,time',
+      },
+    },
+  });
+
+  const fastify = Fastify({ logger });
 
   const configPath = path.join(__dirname, 'config.yml');
   const config = YAML.parse(fs.readFileSync(configPath, 'utf8'));
@@ -86,13 +97,17 @@ fastify.get('/logout', async (req, reply) => {
     );
   }
 
-  fastify.listen({ port: 3000 }, (err, address) => {
-    if (err) {
-      fastify.log.error(err);
-      process.exit(1);
-    }
-    fastify.log.info(`Server listening at ${address}`);
-  });
+  try {
+    await fastify.listen({
+      port: 3000,
+      host: '0.0.0.0',
+      listenTextResolver: (addr) =>
+        `\x1b[92mNiactyl server ready at ${addr}\x1b[0m`,
+    });
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
 }
 
 start().catch((err) => {

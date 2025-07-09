@@ -11,7 +11,12 @@ if [ "$AUTO_UPDATE" = "1" ] || [ ! -d server/node_modules ]; then
 fi
 
 if [ "$AUTO_UPDATE" = "1" ] || [ ! -d client/node_modules ]; then
-  cd client && npm install && npm run build
+  cd client && npm install
+  cd ..
+fi
+
+if [ "$AUTO_UPDATE" = "1" ] || [ ! -d client/dist ]; then
+  cd client && npm run build
   cd ..
 fi
 
