@@ -1,0 +1,10 @@
+sessionSecret: change_me
+
+discord:
+  clientId: "DISCORD_CLIENT_ID"
+  clientSecret: "DISCORD_CLIENT_SECRET"
+  callbackUrl: "http://localhost:3000/auth/discord/callback"
+
+pterodactyl:
+  panelUrl: "https://panel.example.com"
+  apiKey: "APPLICATION_API_KEY"
