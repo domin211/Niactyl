@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { Client as PgClient } from 'pg';
+import { execSync } from 'child_process';
 import { URL } from 'url';
 
 const prisma = new PrismaClient();
@@ -25,6 +26,11 @@ async function ensureDatabase() {
 
 export async function init() {
   await ensureDatabase();
+  try {
+    execSync('npx prisma db push --skip-generate', { stdio: 'inherit' });
+  } catch (err) {
+    console.error('Failed to push Prisma schema', err);
+  }
   await prisma.$connect();
 }
 
