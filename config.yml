@@ -1,20 +1,20 @@
 sessionSecret: DAhxwoVlWpWSfeNIsJeFrb9dx19hwlSK
-domain: "http://localhost:3000"
+domain: "http://op-1.firecone.eu:1066"
 
 discord:
-  clientId: "DISCORD_CLIENT_ID"
-  clientSecret: "DISCORD_CLIENT_SECRET"
-  callbackUrl: "http://localhost:3000/auth/discord/callback"
+  clientId: "1142540615633076244"
+  clientSecret: "olrnbeedXtDM1ZEcBD6qSAvdzGUryrMo"
+  callbackUrl: "http://op-1.firecone.eu:1066/auth/discord/callback"
 
 pterodactyl:
-  panelUrl: "https://panel.example.com"
-  apiKey: "APPLICATION_API_KEY"
+  panelUrl: "https://panel.firecone.eu"
+  apiKey: "ptla_OTgTmivmFmUapDTEDCxqp18OITg0EZhrKzZj31LT2WI"
 
 # PostgreSQL connection details. `DATABASE_URL` will be created from these
 # values if it is not already set.
 database:
-  user: "user"
-  password: "password"
-  host: "localhost"
+  user: "pterodactyl"
+  password: "Pl3453Ch4n63M3!"
+  host: "5.249.164.28"
   port: 5432
-  name: "niactyl"
+  name: "Niactyl"
