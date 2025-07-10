@@ -14,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function start() {
-  const fastify = Fastify({ logger: true });
+  const fastify = Fastify({ logger: false });
 
   const configPath = path.join(__dirname, 'config.yml');
   const config = YAML.parse(fs.readFileSync(configPath, 'utf8'));
@@ -60,7 +60,7 @@ fastify.get('/auth/discord/callback', async function (req, reply) {
   });
   const discordUser = await userRes.json();
   req.session.user = discordUser;
-  await ensurePteroUser(discordUser);
+  await ensurePteroUser(discordUser, config);
   reply.redirect('/dashboard');
 });
 
@@ -81,17 +81,20 @@ fastify.get('/logout', async (req, reply) => {
       reply.sendFile('index.html');
     });
   } else {
-    fastify.log.warn(
+    console.warn(
       `Static files not found at ${distPath}. Run 'npm run build' in the client directory.`
     );
   }
 
-  fastify.listen({ port: 3000 }, (err, address) => {
+  fastify.listen({ port: 3000 }, (err) => {
     if (err) {
-      fastify.log.error(err);
+      console.error(err);
       process.exit(1);
     }
-    fastify.log.info(`Niactyl server ready at ${address}`);
+    console.log(
+      '\x1b[32m%s\x1b[0m',
+      `Niactyl server is ready at ${config.domain}`
+    );
   });
 }
 
@@ -100,7 +103,7 @@ start().catch((err) => {
   process.exit(1);
 });
 
-async function ensurePteroUser(discordUser) {
+async function ensurePteroUser(discordUser, config) {
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${config.pterodactyl.apiKey}`,
@@ -133,6 +136,6 @@ async function ensurePteroUser(discordUser) {
     );
     return await createRes.json();
   } catch (err) {
-    fastify.log.error(err);
+    console.error(err);
   }
 }
