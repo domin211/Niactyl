@@ -9,3 +9,7 @@ discord:
 pterodactyl:
   panelUrl: "https://panel.example.com"
   apiKey: "APPLICATION_API_KEY"
+
+# Connection string for your PostgreSQL database. This value can also be set
+# via the DATABASE_URL environment variable.
+databaseUrl: "postgresql://user:password@localhost:5432/niactyl"
