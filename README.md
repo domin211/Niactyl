@@ -18,6 +18,10 @@ The server uses **Prisma** with a PostgreSQL database to store users, eggs and n
 
 The server will automatically create the configured database if it does not already exist.
 
+The server listens on the host and port specified under the `listen` section in
+`config.yml`. If this section is omitted, the host and port are derived from the
+`domain` value.
+
 Then start the server:
 
 ```bash
