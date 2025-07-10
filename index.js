@@ -59,7 +59,9 @@ async function start() {
     reply.redirect('/');
   });
 
-  fastify.listen({ port: 3000 }, (err) => {
+  const { hostname, port } = new URL(config.domain);
+  const listenPort = port ? parseInt(port, 10) : 3000;
+  fastify.listen({ host: hostname, port: listenPort }, (err) => {
     if (err) {
       console.error(err);
       process.exit(1);
