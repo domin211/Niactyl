@@ -40,6 +40,8 @@ if [ "$AUTO_UPDATE" = "1" ] || [ ! -d node_modules ]; then
   npm install
   npx prisma generate
 fi
+# Ensure database tables are created from the Prisma schema
+npx prisma db push
 
 if [ "$AUTO_UPDATE" = "1" ] || [ ! -d client/node_modules ]; then
   cd client && npm install
