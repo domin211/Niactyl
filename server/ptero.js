@@ -23,12 +23,15 @@ export async function ensurePteroUser(discordUser) {
       { headers }
     );
 
+    const resText = await res.text();
     let data;
     try {
-      data = await res.json();
+      data = JSON.parse(resText);
     } catch (err) {
-      const text = await res.text();
-      console.error('Unexpected response from Pterodactyl when fetching user:', text);
+      console.error(
+        'Unexpected response from Pterodactyl when fetching user:',
+        resText
+      );
       return null;
     }
 
@@ -51,11 +54,14 @@ export async function ensurePteroUser(discordUser) {
       }
     );
 
+    const createText = await createRes.text();
     try {
-      return await createRes.json();
+      return JSON.parse(createText);
     } catch (err) {
-      const text = await createRes.text();
-      console.error('Unexpected response from Pterodactyl when creating user:', text);
+      console.error(
+        'Unexpected response from Pterodactyl when creating user:',
+        createText
+      );
       return null;
     }
   } catch (err) {
