@@ -1,4 +1,4 @@
-sessionSecret: change_me
+sessionSecret: you_should_change_this
 domain: "http://localhost:3000"
 
 discord:
