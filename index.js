@@ -55,7 +55,10 @@ async function start() {
   }
 
   fastify.get('/logout', async (req, reply) => {
-    await req.destroySession();
+    if (req.session) {
+      await req.session.destroy();
+    }
+    reply.clearCookie('sessionId');
     reply.redirect('/');
   });
 
