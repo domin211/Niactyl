@@ -9,6 +9,7 @@ Run the following commands to install dependencies:
 ```bash
 npm install
 npx prisma generate
+npx prisma db push
 cd client && npm install && npm run build
 cd ..
 ```
@@ -29,7 +30,7 @@ You can also run the provided `startup.sh` script which will install dependencie
 bash startup.sh
 ```
 
-The script builds `DATABASE_URL` from the `database` section in `config.yml` when not already set and runs `npx prisma generate` whenever packages are installed.
+The script builds `DATABASE_URL` from the `database` section in `config.yml` when not already set and runs `npx prisma generate` and `npx prisma db push` whenever packages are installed.
 
 If you see a warning about missing static files when starting the server, build the client:
 
