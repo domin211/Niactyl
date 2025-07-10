@@ -1,6 +1,6 @@
 # Niactyl
 
-Fullstack application with a Fastify backend and simple frontend. Requires Node.js 18 or newer.
+Fullstack application with a Fastify backend and simple frontend. Requires Node.js 18 or newer. The server now stores data in a PostgreSQL database via Prisma and automatically imports eggs and nodes from your Pterodactyl panel.
 
 ## Getting Started
 
@@ -11,6 +11,8 @@ npm install
 cd client && npm install && npm run build
 cd ..
 ```
+
+The server uses **Prisma** with a PostgreSQL database to store users, eggs and nodes. Set the `DATABASE_URL` environment variable with your Postgres connection string before starting. Eggs and nodes are automatically imported from your Pterodactyl panel using the API key provided in `config.yml`.
 
 Then start the server:
 
@@ -39,5 +41,7 @@ Running `startup.sh` will perform this build automatically whenever the `client/
 - `GET /auth/discord` - redirect to Discord OAuth
 - `GET /auth/discord/callback` - OAuth callback
 - `GET /logout` - destroy the session
+
+Egg and node information is stored in the database and updated whenever the server starts.
 
 Static files from `client/dist` are served when available.
