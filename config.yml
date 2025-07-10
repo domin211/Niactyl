@@ -1,5 +1,8 @@
 sessionSecret: DAhxwoVlWpWSfeNIsJeFrb9dx19hwlSK
 domain: "http://op-1.firecone.eu:1066"
+listen:
+  host: "0.0.0.0"
+  port: 1066
 
 discord:
   clientId: "1142540615633076244"

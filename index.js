@@ -59,9 +59,17 @@ async function start() {
     reply.redirect('/');
   });
 
-  const { hostname, port } = new URL(config.domain);
-  const listenPort = port ? parseInt(port, 10) : 3000;
-  fastify.listen({ host: hostname, port: listenPort }, (err) => {
+  let listenHost;
+  let listenPort;
+  if (config.listen && (config.listen.host || config.listen.port)) {
+    listenHost = config.listen.host || '0.0.0.0';
+    listenPort = config.listen.port || 3000;
+  } else {
+    const { hostname, port } = new URL(config.domain);
+    listenHost = hostname;
+    listenPort = port ? parseInt(port, 10) : 3000;
+  }
+  fastify.listen({ host: listenHost, port: listenPort }, (err) => {
     if (err) {
       console.error(err);
       process.exit(1);
