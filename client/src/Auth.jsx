@@ -22,8 +22,8 @@ function Auth() {
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rubik:wght@500;700&display=swap"
         rel="stylesheet"
       />
-      <div className="min-h-screen bg-gradient-to-br from-[#0c0e14] via-[#14171F] to-black flex flex-col items-center justify-center px-4 font-[Inter]">
-        <div className="bg-[#14171F] rounded-xl p-10 w-full max-w-md text-center shadow-2xl">
+      <div className="min-h-screen bg-black text-gray-100 flex flex-col items-center justify-center px-4 font-[Inter]">
+        <div className="bg-[#111] border border-gray-800 rounded-xl p-10 w-full max-w-md text-center shadow-lg">
           <h1
             className="text-3xl font-bold text-[#F7F7F7] mb-1"
             style={{ fontFamily: 'Rubik, sans-serif' }}
@@ -62,7 +62,7 @@ function Auth() {
             .
           </p>
         </div>
-        <p className="mt-4 text-sm font-normal" style={{ color: BRAND_COLOR }}>
+        <p className="mt-4 text-sm text-gray-500">
           © {CURRENT_YEAR} {APP_NAME} | Powered by Niactyl
         </p>
       </div>
