@@ -22,8 +22,9 @@ async function start() {
   const configPath = path.join(__dirname, 'config.yml');
   const config = YAML.parse(fs.readFileSync(configPath, 'utf8'));
 
-  if (!process.env.DATABASE_URL && config.databaseUrl) {
-    process.env.DATABASE_URL = config.databaseUrl;
+  if (!process.env.DATABASE_URL && config.database) {
+    const { user, password, host, port, name } = config.database;
+    process.env.DATABASE_URL = `postgresql://${user}:${password}@${host}:${port}/${name}`;
   }
 
   await db.init();
