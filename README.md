@@ -1,6 +1,6 @@
 # Niactyl
 
-Fullstack application with a Fastify backend and simple frontend. Requires Node.js 18 or newer. The server now stores data in a PostgreSQL database via Prisma and automatically imports eggs and nodes from your Pterodactyl panel.
+Fullstack application with a Fastify backend and simple frontend. Requires Node.js 22 or newer. The server now stores data in a PostgreSQL database via Prisma and automatically imports eggs and nodes from your Pterodactyl panel.
 
 ## Getting Started
 
