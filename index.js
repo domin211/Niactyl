@@ -80,10 +80,6 @@ fastify.get('/logout', async (req, reply) => {
     fastify.setNotFoundHandler((req, reply) => {
       reply.sendFile('index.html');
     });
-  } else {
-    console.warn(
-      `Static files not found at ${distPath}. Run 'npm run build' in the client directory.`
-    );
   }
 
   fastify.listen({ port: 3000 }, (err) => {
