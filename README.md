@@ -8,7 +8,8 @@ Run the following commands to install dependencies:
 
 ```bash
 cd server && npm install
-cd ../client && npm install && npm run build
+cd ../client && npm install
+npm run build # or enable devMode in server/config.yml
 cd ..
 ```
 
@@ -31,3 +32,5 @@ cd client && npm run build
 ```
 
 Running `startup.sh` will perform this build automatically whenever the `client/dist` directory is absent.
+
+To skip building the client entirely during development, set `devMode: true` in `server/config.yml`. The server will then start the client dev server using `npm run dev`.

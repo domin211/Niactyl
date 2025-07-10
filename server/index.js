@@ -9,15 +9,24 @@ import fastifyOauth2 from '@fastify/oauth2';
 import fs from 'fs';
 import YAML from 'yaml';
 import fetch from 'node-fetch';
+import { spawn } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function start() {
-  const fastify = Fastify({ logger: true });
+  const fastify = Fastify({ logger: false });
 
   const configPath = path.join(__dirname, 'config.yml');
   const config = YAML.parse(fs.readFileSync(configPath, 'utf8'));
+
+  if (config.devMode) {
+    const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+    spawn(npmCmd, ['run', 'dev'], {
+      cwd: path.join(__dirname, '../client'),
+      stdio: 'inherit',
+    });
+  }
 
   await fastify.register(cors);
   await fastify.register(fastifyCookie);
@@ -60,7 +69,7 @@ fastify.get('/auth/discord/callback', async function (req, reply) {
   });
   const discordUser = await userRes.json();
   req.session.user = discordUser;
-  await ensurePteroUser(discordUser);
+  await ensurePteroUser(discordUser, config);
   reply.redirect('/dashboard');
 });
 
@@ -70,7 +79,7 @@ fastify.get('/logout', async (req, reply) => {
 });
 
   const distPath = path.join(__dirname, '../client/dist');
-  if (fs.existsSync(distPath)) {
+  if (!config.devMode && fs.existsSync(distPath)) {
     await fastify.register(fastifyStatic, {
       root: distPath,
       prefix: '/',
@@ -80,18 +89,21 @@ fastify.get('/logout', async (req, reply) => {
     fastify.setNotFoundHandler((req, reply) => {
       reply.sendFile('index.html');
     });
-  } else {
-    fastify.log.warn(
+  } else if (!config.devMode) {
+    console.warn(
       `Static files not found at ${distPath}. Run 'npm run build' in the client directory.`
     );
   }
 
-  fastify.listen({ port: 3000 }, (err, address) => {
+  fastify.listen({ port: 3000 }, (err) => {
     if (err) {
-      fastify.log.error(err);
+      console.error(err);
       process.exit(1);
     }
-    fastify.log.info(`Niactyl server ready at ${address}`);
+    console.log(
+      '\x1b[32m%s\x1b[0m',
+      `Niactyl server is ready at ${config.domain}`
+    );
   });
 }
 
@@ -100,7 +112,7 @@ start().catch((err) => {
   process.exit(1);
 });
 
-async function ensurePteroUser(discordUser) {
+async function ensurePteroUser(discordUser, config) {
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${config.pterodactyl.apiKey}`,
@@ -133,6 +145,6 @@ async function ensurePteroUser(discordUser) {
     );
     return await createRes.json();
   } catch (err) {
-    fastify.log.error(err);
+    console.error(err);
   }
 }
