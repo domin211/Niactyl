@@ -86,12 +86,15 @@ fastify.get('/logout', async (req, reply) => {
     );
   }
 
-  fastify.listen({ port: 3000 }, (err, address) => {
+  fastify.listen({ port: 3000 }, (err) => {
     if (err) {
       fastify.log.error(err);
       process.exit(1);
     }
-    fastify.log.info(`Niactyl server ready at ${address}`);
+    console.log(
+      '\x1b[32m%s\x1b[0m',
+      `Niactyl server is ready at ${config.domain}`
+    );
   });
 }
 

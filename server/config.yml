@@ -1,4 +1,5 @@
 sessionSecret: change_me
+domain: "http://localhost:3000"
 
 discord:
   clientId: "DISCORD_CLIENT_ID"
