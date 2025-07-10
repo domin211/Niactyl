@@ -9,11 +9,11 @@ fi
 
 # Load database configuration from config.yml
 if [ -f config.yml ]; then
-    DB_USER=$(grep '^[ ]*user:' config.yml | awk '{print $2}' | tr -d '"')
-    DB_PASS=$(grep '^[ ]*password:' config.yml | awk '{print $2}' | tr -d '"')
-    DB_HOST=$(grep '^[ ]*host:' config.yml | awk '{print $2}' | tr -d '"')
-    DB_PORT=$(grep '^[ ]*port:' config.yml | awk '{print $2}' | tr -d '"')
-    DB_NAME=$(grep '^[ ]*name:' config.yml | awk '{print $2}' | tr -d '"')
+    DB_USER=$(awk '/^database:/ {f=1; next} /^[^[:space:]]/ {f=0} f && /user:/ {print $2}' config.yml | tr -d '"')
+    DB_PASS=$(awk '/^database:/ {f=1; next} /^[^[:space:]]/ {f=0} f && /password:/ {print $2}' config.yml | tr -d '"')
+    DB_HOST=$(awk '/^database:/ {f=1; next} /^[^[:space:]]/ {f=0} f && /host:/ {print $2}' config.yml | tr -d '"')
+    DB_PORT=$(awk '/^database:/ {f=1; next} /^[^[:space:]]/ {f=0} f && /port:/ {print $2}' config.yml | tr -d '"')
+    DB_NAME=$(awk '/^database:/ {f=1; next} /^[^[:space:]]/ {f=0} f && /name:/ {print $2}' config.yml | tr -d '"')
 fi
 
 # Build DATABASE_URL from config.yml when not already set
