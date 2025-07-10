@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import config from './config';
+import Auth from './Auth';
 
 function Home({ message, user }) {
   return user ? (
@@ -51,9 +52,10 @@ function App() {
         <h1 className="text-4xl font-bold mb-4">Niactyl App</h1>
         <Routes>
           <Route path="/" element={<Home message={message} user={user} />} />
+          <Route path="/auth" element={<Auth />} />
           <Route
             path="/dashboard"
-            element={user ? <Dashboard user={user} /> : <Navigate to="/" />}
+            element={user ? <Dashboard user={user} /> : <Navigate to="/auth" />}
           />
         </Routes>
       </div>
