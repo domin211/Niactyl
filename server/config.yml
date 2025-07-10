@@ -2,6 +2,7 @@ sessionSecret: change_me
 domain: "http://localhost:3000"
 devMode: false
 
+
 discord:
   clientId: "DISCORD_CLIENT_ID"
   clientSecret: "DISCORD_CLIENT_SECRET"
