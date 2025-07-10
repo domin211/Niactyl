@@ -11,7 +11,9 @@ function Dashboard({ user }) {
   return (
     <div className="text-center">
       <p className="mb-4 text-xl text-gray-300">Welcome, {user.username}!</p>
-      <a href="/logout" className="underline text-blue-400">Logout</a>
+      <a href={`${config.apiBase}/logout`} className="underline text-blue-400">
+        Logout
+      </a>
     </div>
   );
 }
