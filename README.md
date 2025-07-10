@@ -23,7 +23,7 @@ Then start the server:
 node index.js
 ```
 
-You can also run the provided `startup.sh` script which will install dependencies if they do not exist and start the server:
+You can also run the provided `startup.sh` script which will install dependencies if they do not exist and start the server. When the configured database host is `localhost`, the script will also install and start PostgreSQL and create the configured user and database automatically:
 
 ```bash
 bash startup.sh
