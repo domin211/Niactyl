@@ -59,7 +59,10 @@ async function start() {
     reply.redirect('/');
   });
 
-  fastify.listen({ port: 3000 }, (err) => {
+  const { port } = new URL(config.domain);
+  const listenPort = port ? parseInt(port, 10) : 3000;
+  // Listen on all interfaces locally so external domain works
+  fastify.listen({ host: '0.0.0.0', port: listenPort }, (err) => {
     if (err) {
       console.error(err);
       process.exit(1);
