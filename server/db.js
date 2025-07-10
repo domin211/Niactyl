@@ -1,8 +1,30 @@
 import { PrismaClient } from '@prisma/client';
+import { Client as PgClient } from 'pg';
+import { URL } from 'url';
 
 const prisma = new PrismaClient();
 
+async function ensureDatabase() {
+  const url = new URL(process.env.DATABASE_URL);
+  const dbName = url.pathname.slice(1);
+  const client = new PgClient({
+    host: url.hostname,
+    port: parseInt(url.port, 10) || 5432,
+    user: url.username,
+    password: url.password,
+    database: 'postgres',
+  });
+
+  await client.connect();
+  const res = await client.query('SELECT 1 FROM pg_database WHERE datname=$1', [dbName]);
+  if (res.rowCount === 0) {
+    await client.query(`CREATE DATABASE "${dbName}"`);
+  }
+  await client.end();
+}
+
 export async function init() {
+  await ensureDatabase();
   await prisma.$connect();
 }
 

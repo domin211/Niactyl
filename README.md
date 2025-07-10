@@ -13,7 +13,9 @@ cd client && npm install && npm run build
 cd ..
 ```
 
-The server uses **Prisma** with a PostgreSQL database to store users, eggs and nodes. Set the `DATABASE_URL` environment variable with your Postgres connection string, or ensure `databaseUrl` is set in `config.yml`. Eggs and nodes are automatically imported from your Pterodactyl panel using the API key provided in `config.yml`.
+The server uses **Prisma** with a PostgreSQL database to store users, eggs and nodes. Set the `DATABASE_URL` environment variable with your Postgres connection string, or provide connection details under the `database` section in `config.yml`. Eggs and nodes are automatically imported from your Pterodactyl panel using the API key provided in `config.yml`.
+
+The server will automatically create the configured database if it does not already exist.
 
 Then start the server:
 
@@ -27,7 +29,7 @@ You can also run the provided `startup.sh` script which will install dependencie
 bash startup.sh
 ```
 
-The script reads `databaseUrl` from `config.yml` if `DATABASE_URL` is not set and runs `npx prisma generate` whenever packages are installed.
+The script builds `DATABASE_URL` from the `database` section in `config.yml` when not already set and runs `npx prisma generate` whenever packages are installed.
 
 If you see a warning about missing static files when starting the server, build the client:
 
