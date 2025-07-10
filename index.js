@@ -41,7 +41,7 @@ async function start() {
 
   await importEggsAndNodes();
 
-  const distPath = path.join(__dirname, '../client/dist');
+  const distPath = path.join(__dirname, 'client', 'dist');
   if (fs.existsSync(distPath)) {
     await fastify.register(fastifyStatic, {
       root: distPath,
