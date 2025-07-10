@@ -26,7 +26,7 @@ export default async function (fastify, opts) {
   });
 
   fastify.get('/auth/discord/callback', async function (req, reply) {
-    const token = await this.discordOAuth2.getAccessTokenFromAuthorizationCodeFlow(req);
+    const { token } = await this.discordOAuth2.getAccessTokenFromAuthorizationCodeFlow(req);
     const userRes = await fetch('https://discord.com/api/users/@me', {
       headers: { Authorization: `Bearer ${token.access_token}` },
     });
