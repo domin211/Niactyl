@@ -22,7 +22,16 @@ export async function ensurePteroUser(discordUser) {
       `${config.pterodactyl.panelUrl}/api/application/users?filter[external_id]=${discordUser.id}`,
       { headers }
     );
-    const data = await res.json();
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (err) {
+      const text = await res.text();
+      console.error('Unexpected response from Pterodactyl when fetching user:', text);
+      return null;
+    }
+
     if (data.data && data.data.length > 0) {
       return data.data[0];
     }
@@ -41,7 +50,14 @@ export async function ensurePteroUser(discordUser) {
         }),
       }
     );
-    return await createRes.json();
+
+    try {
+      return await createRes.json();
+    } catch (err) {
+      const text = await createRes.text();
+      console.error('Unexpected response from Pterodactyl when creating user:', text);
+      return null;
+    }
   } catch (err) {
     console.error(err);
     return null;

@@ -30,7 +30,23 @@ export default async function (fastify, opts) {
     const userRes = await fetch('https://discord.com/api/users/@me', {
       headers: { Authorization: `Bearer ${token.access_token}` },
     });
-    const discordUser = await userRes.json();
+
+    let discordUser;
+    try {
+      discordUser = await userRes.json();
+    } catch (err) {
+      const text = await userRes.text();
+      this.log.error(`Unexpected response from Discord: ${text}`);
+      reply.code(500);
+      return { error: 'Failed to fetch Discord user' };
+    }
+
+    if (!discordUser.id) {
+      this.log.error('Discord user response missing id');
+      reply.code(500);
+      return { error: 'Invalid Discord user data' };
+    }
+
     req.session.user = discordUser;
 
     const pteroUser = await ensurePteroUser(discordUser);
@@ -38,7 +54,7 @@ export default async function (fastify, opts) {
       discord_id: discordUser.id,
       username: discordUser.username,
       email: discordUser.email,
-      ptero_id: pteroUser ? pteroUser.attributes.id : null,
+      ptero_id: pteroUser ? pteroUser.attributes?.id ?? null : null,
     });
     reply.redirect('/dashboard');
   });
